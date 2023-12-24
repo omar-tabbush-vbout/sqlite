@@ -1,10 +1,10 @@
 #!/bin/sh
 
-already_did_init="/data/data.db"
+already_did_init="/directus/database/data.db"
 
 if [ ! -e "$already_did_init" ]; then
     echo "Running data init"
-    sqlite3 /data/data.db < init_db.sql
+    sqlite3 /directus/database/data.db < init_db.sql
     echo "Init complete"
 fi
 
@@ -17,9 +17,9 @@ schema_hash=$(sha1sum seed_db.sql | cut -d ' ' -f 1)
 # don't run the seed_db.sql file.
 if [ ! -f "$seed_already_ran" ] && [ "$schema_not_changed_hash" != "$schema_hash" ]; then
     echo "Running data seed"
-    sqlite3 /data/data.db < seed_db.sql
+    sqlite3 /directus/database/data.db < seed_db.sql
     touch "$seed_already_ran"
     echo "Seed complete"
 fi
 
-python wsgi.py /data/data.db
+python wsgi.py /directus/database/data.db
